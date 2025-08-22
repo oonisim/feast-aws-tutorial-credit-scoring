@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 
 # IAM Role for EC2 instance
 resource "aws_iam_role" "ec2_service_role" {
-  name = "EC2-Service-Role"
+  name = "${var.project_name}-ec2-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -19,8 +19,7 @@ resource "aws_iam_role" "ec2_service_role" {
   })
 
   tags = {
-    Name        = "EC2-Service-Role"
-    Environment = "production"
+    Name = "${var.project_name}-ec2-role"
   }
 }
 
@@ -101,17 +100,9 @@ resource "aws_iam_policy" "ec2_service_policy" {
         Sid    = "SSMSessionManager"
         Effect = "Allow"
         Action = [
-          "ssm:UpdateInstanceInformation",
-          "ssmmessages:CreateControlChannel",
-          "ssmmessages:CreateDataChannel",
-          "ssmmessages:OpenControlChannel",
-          "ssmmessages:OpenDataChannel",
-          "ec2messages:AcknowledgeMessage",
-          "ec2messages:DeleteMessage",
-          "ec2messages:FailMessage",
-          "ec2messages:GetEndpoint",
-          "ec2messages:GetMessages",
-          "ec2messages:SendReply"
+          "ssm:*",
+          "ssmmessages:*",
+          "ec2messages:*",
         ]
         Resource = "*"
       },
@@ -164,32 +155,6 @@ resource "aws_iam_role_policy_attachment" "ssm_managed_instance_core" {
 resource "aws_iam_instance_profile" "ec2_service_profile" {
   name = "EC2-Service-Profile"
   role = aws_iam_role.ec2_service_role.name
-}
-
-# Optional: Create a more restrictive S3 policy for specific buckets
-resource "aws_iam_policy" "s3_specific_bucket_policy" {
-  name        = "S3-Specific-Bucket-Policy"
-  description = "Policy for specific S3 bucket access"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "S3SpecificBucketAccess"
-        Effect = "Allow"
-        Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject",
-          "s3:ListBucket"
-        ]
-        Resource = [
-          "arn:aws:s3:::your-specific-bucket-name",
-          "arn:aws:s3:::your-specific-bucket-name/*"
-        ]
-      }
-    ]
-  })
 }
 
 # Output the role ARN and instance profile name

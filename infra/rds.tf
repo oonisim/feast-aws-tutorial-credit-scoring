@@ -11,11 +11,11 @@ resource "aws_db_subnet_group" "feast_registry" {
 resource "aws_security_group" "feast_registry_sg" {
   name        = "${var.project_name}-feast-registry-sg"
   description = "Allow access to RDS from specific CIDR blocks"
-  vpc_id = data.aws_vpc.vpc.id
+  vpc_id      = data.aws_vpc.vpc.id
 
   # Allow inbound traffic to RDS
   ingress {
-    self = true
+    self      = true
     from_port = var.feast_registry_db_port
     to_port   = var.feast_registry_db_port
     protocol  = "tcp"
@@ -26,7 +26,7 @@ resource "aws_security_group" "feast_registry_sg" {
   }
   # Allow all outbound traffic
   egress {
-    self = true
+    self      = true
     from_port = 0
     to_port   = 0
     protocol  = "-1"
@@ -37,7 +37,7 @@ resource "aws_security_group" "feast_registry_sg" {
   }
 
   tags = {
-    Name  = "${var.project_name}-feast-registry-ssg"
+    Name = "${var.project_name}-feast-registry-ssg"
   }
 }
 
@@ -67,8 +67,8 @@ resource "aws_db_instance" "feast_registry" {
   ]
   # InvalidParameterValue: Could not find parameter with name: rds.force_ssl
   # parameter_group_name = aws_db_parameter_group.feast_registry.name
-  publicly_accessible  = false
-  skip_final_snapshot  = true
+  publicly_accessible = false
+  skip_final_snapshot = true
 }
 
 

@@ -79,6 +79,36 @@ resource "aws_iam_role_policy_attachment" "s3-policy-attachment" {
   policy_arn = aws_iam_policy.s3_full_access_policy.arn
 }
 
+resource "aws_security_group" "feast_redshift_sg" {
+  name_prefix = "${var.project_name}-redshift-sg"
+  vpc_id      = var.vpc_id
+  description = "Security group for Redshift cluster"
+
+  ingress {
+    description = "Allow Redshift access"
+    from_port   = 5439
+    to_port     = 5439
+    protocol    = "tcp"
+    cidr_blocks = [
+      data.aws_vpc.vpc.cidr_block
+    ]
+  }
+
+  egress {
+    description = "Allow access from RedShift"
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = [
+      data.aws_vpc.vpc.cidr_block
+    ]
+  }
+
+  tags = {
+    Name = "${var.project_name}-redshift-sg"
+  }
+}
+
 resource "aws_redshift_subnet_group" "feast_redshift_subnet_group" {
   name       = "${var.project_name}-redshift-subnet-group"
   subnet_ids = var.redshift_subnet_ids
@@ -92,6 +122,9 @@ resource "aws_redshift_cluster" "feast_redshift_cluster" {
   iam_roles = [
     data.aws_iam_role.AWSServiceRoleForRedshift.arn,
     aws_iam_role.s3_spectrum_role.arn
+  ]
+  vpc_security_group_ids = [
+    aws_security_group.feast_redshift_sg.id
   ]
   database_name             = var.database_name
   master_username           = var.admin_user
@@ -251,4 +284,12 @@ resource "aws_glue_catalog_table" "credit_history_table" {
       type = "timestamp"
     }
   }
+}
+
+
+output "redshift_endpoint" {
+  value = aws_redshift_cluster.feast_redshift_cluster.endpoint
+}
+output "redshift_cluster_identifier" {
+  value = aws_redshift_cluster.feast_redshift_cluster.cluster_identifier
 }
