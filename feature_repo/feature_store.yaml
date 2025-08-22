@@ -1,0 +1,19 @@
+project: credit_scoring_aws
+registry: registry.db
+provider: aws
+online_store:
+    type: dynamodb
+    region: ap-southeast-2
+offline_store:
+    # https://docs.feast.dev/reference/offline-stores/redshift
+    # Redshift offline store requires an IAM role for Redshift to access S3.
+    # The IAM role is set to offline_store: iam_role in feature_store.yaml file.
+    #
+    # You also need kms:decrypt permission.
+    type: redshift
+    cluster_id: my-feast-project-aws-redshift-cluster
+    region: ap-southeast-2
+    user: admin
+    database: dev
+    s3_staging_location: s3://my-feast-project-aws-bucket20250818010939673100000001
+    iam_role: arn:aws:iam::346949931228:role/s3_spectrum_role

@@ -1,0 +1,6 @@
+feast[aws]>=0.51.0
+matplotlib==3.10.5
+matplotlib-inline==0.1.7
+pandas==2.3.1
+shap==0.48.0
+streamlit==1.48.1
