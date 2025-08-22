@@ -38,7 +38,6 @@ resource "aws_security_group" "feast_registry_sg" {
 
   tags = {
     Name  = "${var.project_name}-feast-registry-ssg"
-    Owner = "masayuki.onishi@cba.com.au"
   }
 }
 

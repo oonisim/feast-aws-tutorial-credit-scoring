@@ -9,3 +9,5 @@ infra/*.tfvars.json
 *.terraform*
 generate_data.py
 /infra/.terraform/
+infra/clab.tfvars
+/push.sh

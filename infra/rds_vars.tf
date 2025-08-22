@@ -15,9 +15,4 @@ variable "feast_registry_db_port" {
 }
 variable "rds_subnet_ids" {
   type = list(string)
-  default = [
-    "subnet-017837486d3ef7ff3",
-    "subnet-04afd989d42d15f24",
-    "subnet-028d464c150608a4b"
-  ]
 }

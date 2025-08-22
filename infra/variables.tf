@@ -43,9 +43,4 @@ variable "nodes" {
 
 variable "redshift_subnet_ids" {
   type = list(string)
-  default = [
-    "subnet-041202f3bd6c1b676",
-    "subnet-0f5a9fbb3c079c9cc",
-    "subnet-05d1f728bbef68f94"
-  ]
 }
