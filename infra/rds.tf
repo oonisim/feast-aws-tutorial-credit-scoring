@@ -91,5 +91,5 @@ output "feast_registry_db_endpoint_engine" {
 }
 output "feast_registry_db_name" {
   description = "FEAST registry database name"
-  value = aws_db_instance.feast_registry.db_name
+  value       = aws_db_instance.feast_registry.db_name
 }

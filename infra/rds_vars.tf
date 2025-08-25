@@ -1,7 +1,7 @@
 variable "feast_registry_db_name" {
-  type = string
+  type        = string
   description = "Name of the FEAST registry database name on the RDS instance"
-  default = "feast"
+  default     = "feast"
 }
 variable "feast_registry_db_admin" {
   description = "Username for the Feast registry database"
