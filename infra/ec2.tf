@@ -1,6 +1,6 @@
 # Example EC2 instance using the IAM role
 resource "aws_instance" "feast" {
-  ami                  = "ami-091c78e02076da148"
+  ami                  = var.ec2_ami_id
   instance_type        = "t3.xlarge"
   iam_instance_profile = aws_iam_instance_profile.ec2_service_profile.name
   subnet_id            = var.ec2_subnet_id
@@ -9,7 +9,7 @@ resource "aws_instance" "feast" {
     aws_security_group.feast_registry_sg.id,
     aws_security_group.feast_redshift_sg.id
   ]
-  associate_public_ip_address = false
+  associate_public_ip_address = true
   # No need for SSH key pair when using SSM Session Manager
   # key_name = "your-key-pair"
 

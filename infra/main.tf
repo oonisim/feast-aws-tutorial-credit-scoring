@@ -73,11 +73,34 @@ resource "aws_iam_policy" "s3_full_access_policy" {
 }
 EOF
 }
-
 resource "aws_iam_role_policy_attachment" "s3-policy-attachment" {
   role       = aws_iam_role.s3_spectrum_role.name
   policy_arn = aws_iam_policy.s3_full_access_policy.arn
 }
+
+resource "aws_iam_policy" "allow_kms_decrypt" {
+  name = "allow_kms_decrypt"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+resource "aws_iam_role_policy_attachment" "kms-policy-attachment" {
+  role       = aws_iam_role.s3_spectrum_role.name
+  policy_arn = aws_iam_policy.allow_kms_decrypt.arn
+}
+
 
 resource "aws_security_group" "feast_redshift_sg" {
   name_prefix = "${var.project_name}-redshift-sg"
@@ -120,7 +143,7 @@ resource "aws_redshift_subnet_group" "feast_redshift_subnet_group" {
 resource "aws_redshift_cluster" "feast_redshift_cluster" {
   cluster_identifier = "${var.project_name}-redshift-cluster"
   iam_roles = [
-    data.aws_iam_role.AWSServiceRoleForRedshift.arn,
+    # data.aws_iam_role.AWSServiceRoleForRedshift.arn,
     aws_iam_role.s3_spectrum_role.arn
   ]
   vpc_security_group_ids = [
