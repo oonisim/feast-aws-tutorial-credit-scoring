@@ -11,3 +11,4 @@ generate_data.py
 /infra/.terraform/
 infra/clab.tfvars
 /push.sh
+/utility/aws/get_npd_rds_secret.py

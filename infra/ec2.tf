@@ -2,7 +2,7 @@
 resource "aws_instance" "feast" {
   ami                  = var.ec2_ami_id
   instance_type        = "t3.xlarge"
-  iam_instance_profile = aws_iam_instance_profile.ec2_service_profile.name
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
   subnet_id            = var.ec2_subnet_id
   vpc_security_group_ids = [
     aws_security_group.ec2.id,
@@ -13,9 +13,12 @@ resource "aws_instance" "feast" {
   # No need for SSH key pair when using SSM Session Manager
   # key_name = "your-key-pair"
 
-  tags = {
-    Name = "${var.project_name}-test-feast-ec2"
-  }
+  tags = merge(
+    var.ec2_feast_tags,
+    {
+      Name = "${var.project_name}-test-feast-ec2"
+    }
+  )
 
   # User data to install SSM agent (if not already installed)
   user_data = <<-EOF

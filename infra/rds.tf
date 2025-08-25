@@ -54,6 +54,7 @@ resource "aws_security_group" "feast_registry_sg" {
 
 resource "aws_db_instance" "feast_registry" {
   identifier           = "${var.project_name}-feast-registry"
+  db_name              = var.feast_registry_db_name
   instance_class       = "db.t3.micro"
   allocated_storage    = 5
   engine               = "postgres"
@@ -76,7 +77,19 @@ output "feast_registry_db_endpoint_endpoint" {
   description = "The endpoint of the Feast registry database"
   value       = aws_db_instance.feast_registry.endpoint
 }
+output "feast_registry_db_endpoint_address" {
+  description = "The endpoint IP address of the Feast registry database"
+  value       = aws_db_instance.feast_registry.address
+}
+output "feast_registry_db_endpoint_port" {
+  description = "The endpoint port of the Feast registry database"
+  value       = aws_db_instance.feast_registry.port
+}
 output "feast_registry_db_endpoint_engine" {
   description = "The engine of the Feast registry database"
   value       = aws_db_instance.feast_registry.engine
+}
+output "feast_registry_db_name" {
+  description = "FEAST registry database name"
+  value = aws_db_instance.feast_registry.db_name
 }

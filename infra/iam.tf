@@ -52,11 +52,21 @@ resource "aws_iam_policy" "ec2_service_policy" {
           "arn:aws:s3:::*/*"
         ]
       },
+      # DynamoDB Table
+      {
+        Sid    = "DynamoDBTable"
+        Effect = "Allow"
+        Action = [
+          "dynamodb:*",
+        ]
+        Resource = "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/*"
+      },
       # RDS Permissions
       {
         Sid    = "RDSAccess"
         Effect = "Allow"
         Action = [
+          "rds:*",
           "rds:DescribeDBInstances",
           "rds:DescribeDBClusters",
           "rds:DescribeDBSnapshots",
@@ -68,7 +78,7 @@ resource "aws_iam_policy" "ec2_service_policy" {
           "rds:DescribeDBSubnetGroups",
           "rds-db:connect"
         ]
-        Resource = "*"
+        Resource = aws_db_instance.feast_registry.arn
       },
       # Redshift Permissions
       {
@@ -152,8 +162,8 @@ resource "aws_iam_role_policy_attachment" "ssm_managed_instance_core" {
 }
 
 # Create instance profile for EC2
-resource "aws_iam_instance_profile" "ec2_service_profile" {
-  name = "EC2-Service-Profile"
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = "${var.project_name}-feast-ec2-instance-profile"
   role = aws_iam_role.ec2_service_role.name
 }
 
@@ -165,10 +175,10 @@ output "iam_role_arn" {
 
 output "instance_profile_name" {
   description = "Name of the instance profile"
-  value       = aws_iam_instance_profile.ec2_service_profile.name
+  value       = aws_iam_instance_profile.ec2_instance_profile.name
 }
 
 output "instance_profile_arn" {
   description = "ARN of the instance profile"
-  value       = aws_iam_instance_profile.ec2_service_profile.arn
+  value       = aws_iam_instance_profile.ec2_instance_profile.arn
 }
