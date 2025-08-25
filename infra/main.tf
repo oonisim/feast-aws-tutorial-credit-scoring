@@ -310,6 +310,9 @@ resource "aws_glue_catalog_table" "credit_history_table" {
 }
 
 
+output "feast_bucket" {
+  value = aws_s3_bucket.feast_bucket.id
+}
 output "redshift_endpoint" {
   value = aws_redshift_cluster.feast_redshift_cluster.endpoint
 }

@@ -1,5 +1,11 @@
 project: credit_scoring_aws
-registry: registry.db
+# registry: registry.db
+registry:
+  registry_type: sql
+  # Needs to use double quotes for the RDS connection string.
+  # Otherwise, some special characters could not be recognized
+  path: "postgresql+psycopg2://pgadmin:${RDS_PASSWORD}@${RDS_ENDPOINT}:54320/feast"
+  cache_ttl_seconds: 60
 provider: aws
 online_store:
     type: dynamodb
@@ -15,5 +21,5 @@ offline_store:
     region: ap-southeast-2
     user: admin
     database: dev
-    s3_staging_location: s3://my-feast-project-aws-bucket20250818010939673100000001
+    s3_staging_location: s3://my-feast-project-aws-bucket20250824231804162900000002
     iam_role: arn:aws:iam::346949931228:role/s3_spectrum_role
